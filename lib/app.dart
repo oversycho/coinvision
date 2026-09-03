@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'app_shell.dart';
 import 'core/theme/app_theme.dart';
 import 'cubits/deposit_cubit.dart';
@@ -44,8 +45,15 @@ class CoinVisionApp extends StatelessWidget {
                 theme: AppTheme.build(colors),
                 locale: Locale(lang == AppLang.fa ? 'fa' : 'en'),
                 supportedLocales: const [Locale('en'), Locale('fa')],
+                localizationsDelegates: const [
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
                 builder: (context, child) => Directionality(
-                  textDirection: lang == AppLang.fa ? TextDirection.rtl : TextDirection.ltr,
+                  textDirection: lang == AppLang.fa
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
                   child: child!,
                 ),
                 home: const AppShell(),
