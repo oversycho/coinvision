@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/common/widgets/app_tab_bar.dart';
 import 'core/theme/context_ext.dart';
 import 'cubits/deposit_cubit.dart';
+import 'cubits/kyc_cubit.dart';
 import 'cubits/market_cubit.dart';
 import 'cubits/navigation_cubit.dart';
 import 'cubits/orders_cubit.dart';
@@ -37,6 +38,7 @@ class AppShell extends StatelessWidget {
           context.read<WalletCubit>().start(userId);
           context.read<OrdersCubit>().start(userId);
           context.read<DepositCubit>().start(userId);
+          context.read<KycCubit>().start(userId);
           if (navCubit.state.screen == AppScreen.splash || navCubit.state.screen == AppScreen.auth) {
             navCubit.navigate(AppScreen.home);
           }

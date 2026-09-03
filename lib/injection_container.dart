@@ -23,6 +23,10 @@ import 'features/deposit/data/datasources/deposit_remote_data_source.dart';
 import 'features/deposit/data/repositories/deposit_repository_impl.dart';
 import 'features/deposit/domain/repositories/deposit_repository.dart';
 
+import 'features/kyc/data/datasources/kyc_remote_data_source.dart';
+import 'features/kyc/data/repositories/kyc_repository_impl.dart';
+import 'features/kyc/domain/repositories/kyc_repository.dart';
+
 final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
@@ -60,4 +64,8 @@ Future<void> initDependencies() async {
   // Deposit
   sl.registerLazySingleton<DepositRemoteDataSource>(() => DepositRemoteDataSourceImpl(sl()));
   sl.registerLazySingleton<DepositRepository>(() => DepositRepositoryImpl(sl()));
+
+  // KYC
+  sl.registerLazySingleton<KycRemoteDataSource>(() => KycRemoteDataSourceImpl(sl()));
+  sl.registerLazySingleton<KycRepository>(() => KycRepositoryImpl(sl()));
 }

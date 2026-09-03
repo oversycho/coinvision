@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../core/common/widgets/app_bottom_sheet.dart';
 import '../core/common/widgets/ui_primitives.dart';
 import '../core/localization/translations.dart';
 import '../core/theme/app_text_styles.dart';
@@ -9,6 +10,9 @@ import '../cubits/theme_cubit.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/bloc/auth_event.dart';
 import '../features/auth/presentation/bloc/auth_state.dart';
+import 'change_password_sheet.dart';
+import 'kyc_sheet.dart';
+import 'two_factor_sheet.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -105,11 +109,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const SizedBox(height: 20),
                     _SectionLabel(Tr.t('account', lang), colors),
                     _SettingsGroup(colors: colors, children: [
-                      _NavRow(icon: Icons.verified_user_outlined, label: Tr.t('kyc', lang), colors: colors, onTap: () {}),
+                      _NavRow(
+                        icon: Icons.verified_user_outlined,
+                        label: Tr.t('kyc', lang),
+                        colors: colors,
+                        onTap: () => showAppBottomSheet(
+                          context: context,
+                          colors: colors,
+                          title: Tr.t('kyc', lang),
+                          child: KycSheet(colors: colors, lang: lang, isRtl: isRtl),
+                        ),
+                      ),
                       _Divider(colors),
-                      _NavRow(icon: Icons.lock_outline, label: Tr.t('changePassword', lang), colors: colors, onTap: () {}),
+                      _NavRow(
+                        icon: Icons.lock_outline,
+                        label: Tr.t('changePassword', lang),
+                        colors: colors,
+                        onTap: () => showAppBottomSheet(
+                          context: context,
+                          colors: colors,
+                          title: Tr.t('changePassword', lang),
+                          child: ChangePasswordSheet(colors: colors, lang: lang, isRtl: isRtl),
+                        ),
+                      ),
                       _Divider(colors),
-                      _NavRow(icon: Icons.security_outlined, label: Tr.t('twoFactor', lang), colors: colors, onTap: () {}),
+                      _NavRow(
+                        icon: Icons.security_outlined,
+                        label: Tr.t('twoFactor', lang),
+                        colors: colors,
+                        onTap: () => showAppBottomSheet(
+                          context: context,
+                          colors: colors,
+                          title: Tr.t('twoFactor', lang),
+                          child: TwoFactorSheet(colors: colors, lang: lang, isRtl: isRtl),
+                        ),
+                      ),
                     ]),
                     const SizedBox(height: 20),
                     _SectionLabel(Tr.t('notifications', lang), colors),

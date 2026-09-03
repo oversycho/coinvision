@@ -22,13 +22,50 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }) : super(AuthInitial()) {
     on<AuthCheckRequested>((event, emit) async {
       final user = repository.currentUser;
-      emit(user != null ? AuthAuthenticated(user) : AuthUnauthenticated());
+      if (user == null) {
+        emit(AuthUnauthenticated());
+        return;
+      }
+      if (await repository.needsMfaChallenge()) {
+        final factors = await repository.listMfaFactors();
+        final verified = factors.fold<String?>(null, (acc, f) => f.status == 'verified' ? f.id : acc);
+        if (verified != null) {
+          emit(AuthMfaChallengeRequired(verified));
+          return;
+        }
+      }
+      emit(AuthAuthenticated(user));
     });
 
     on<AuthSignInRequested>((event, emit) async {
       emit(AuthLoading());
       final result = await signInUseCase(email: event.email, password: event.password);
-      result.fold((f) => emit(AuthError(f.message)), (u) => emit(AuthAuthenticated(u)));
+      await result.fold(
+        (f) async => emit(AuthError(f.message)),
+        (u) async {
+          if (await repository.needsMfaChallenge()) {
+            final factors = await repository.listMfaFactors();
+            final verified = factors.fold<String?>(null, (acc, f) => f.status == 'verified' ? f.id : acc);
+            if (verified != null) {
+              emit(AuthMfaChallengeRequired(verified));
+              return;
+            }
+          }
+          emit(AuthAuthenticated(u));
+        },
+      );
+    });
+
+    on<AuthMfaChallengeVerifyRequested>((event, emit) async {
+      emit(AuthLoading());
+      final result = await repository.verifyMfaChallenge(factorId: event.factorId, code: event.code);
+      result.fold(
+        (f) => emit(AuthError(f.message)),
+        (_) {
+          final user = repository.currentUser;
+          if (user != null) emit(AuthAuthenticated(user));
+        },
+      );
     });
 
     on<AuthSignUpRequested>((event, emit) async {
@@ -43,9 +80,38 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       result.fold((f) => emit(AuthError(f.message)), (_) => emit(AuthPasswordResetSent()));
     });
 
+    on<AuthChangePasswordRequested>((event, emit) async {
+      emit(AuthLoading());
+      final result = await repository.changePassword(event.newPassword);
+      result.fold((f) => emit(AuthError(f.message)), (_) => emit(AuthPasswordChanged()));
+    });
+
     on<AuthSignOutRequested>((event, emit) async {
       await signOutUseCase();
       emit(AuthUnauthenticated());
+    });
+
+    on<AuthMfaEnrollRequested>((event, emit) async {
+      emit(AuthLoading());
+      final result = await repository.enrollMfa();
+      result.fold((f) => emit(AuthError(f.message)), (r) => emit(AuthMfaEnrolled(r)));
+    });
+
+    on<AuthMfaVerifyEnrollmentRequested>((event, emit) async {
+      emit(AuthLoading());
+      final result = await repository.verifyMfaEnrollment(factorId: event.factorId, code: event.code);
+      result.fold((f) => emit(AuthError(f.message)), (_) => emit(AuthMfaVerified()));
+    });
+
+    on<AuthMfaListFactorsRequested>((event, emit) async {
+      final result = await repository.listMfaFactors();
+      result.fold((f) => emit(AuthError(f.message)), (list) => emit(AuthMfaFactorsLoaded(list)));
+    });
+
+    on<AuthMfaUnenrollRequested>((event, emit) async {
+      emit(AuthLoading());
+      final result = await repository.unenrollMfa(event.factorId);
+      result.fold((f) => emit(AuthError(f.message)), (_) => emit(AuthMfaUnenrolled()));
     });
 
     _authSub = repository.authStateChanges.listen((user) {

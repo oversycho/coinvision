@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'app_shell.dart';
 import 'core/theme/app_theme.dart';
 import 'cubits/deposit_cubit.dart';
+import 'cubits/kyc_cubit.dart';
 import 'cubits/locale_cubit.dart';
 import 'cubits/market_cubit.dart';
 import 'cubits/navigation_cubit.dart';
@@ -13,6 +14,7 @@ import 'cubits/wallet_cubit.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/bloc/auth_event.dart';
 import 'features/deposit/domain/repositories/deposit_repository.dart';
+import 'features/kyc/domain/repositories/kyc_repository.dart';
 import 'features/market/domain/repositories/market_repository.dart';
 import 'features/orders/domain/repositories/orders_repository.dart';
 import 'features/wallet/domain/repositories/wallet_repository.dart';
@@ -33,6 +35,7 @@ class CoinVisionApp extends StatelessWidget {
         BlocProvider(create: (_) => WalletCubit(sl<WalletRepository>())),
         BlocProvider(create: (_) => OrdersCubit(sl<OrdersRepository>())),
         BlocProvider(create: (_) => DepositCubit(sl<DepositRepository>())),
+        BlocProvider(create: (_) => KycCubit(sl<KycRepository>())),
       ],
       child: BlocBuilder<ThemeCubit, AppThemeMode>(
         builder: (context, themeMode) {
@@ -51,9 +54,7 @@ class CoinVisionApp extends StatelessWidget {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 builder: (context, child) => Directionality(
-                  textDirection: lang == AppLang.fa
-                      ? TextDirection.rtl
-                      : TextDirection.ltr,
+                  textDirection: lang == AppLang.fa ? TextDirection.rtl : TextDirection.ltr,
                   child: child!,
                 ),
                 home: const AppShell(),

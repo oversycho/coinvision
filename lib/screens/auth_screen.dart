@@ -58,6 +58,9 @@ class _AuthScreenState extends State<AuthScreen> {
               }
             },
             builder: (context, authState) {
+              if (authState is AuthMfaChallengeRequired) {
+                return _MfaChallengeForm(factorId: authState.factorId, colors: colors, lang: lang, isRtl: isRtl);
+              }
               final loading = authState is AuthLoading;
               final success = authState is AuthPasswordResetSent ? (isRtl ? 'لینک بازیابی ارسال شد' : 'Reset link sent to your email') : '';
 
@@ -192,6 +195,65 @@ class _ForgotForm extends StatelessWidget {
           GradientActionButton.buy(label: Tr.t('sendReset', lang), loading: loading, onTap: onSubmit),
         ],
       ],
+    );
+  }
+}
+
+class _MfaChallengeForm extends StatefulWidget {
+  final String factorId;
+  final dynamic colors;
+  final AppLang lang;
+  final bool isRtl;
+  const _MfaChallengeForm({required this.factorId, required this.colors, required this.lang, required this.isRtl});
+
+  @override
+  State<_MfaChallengeForm> createState() => _MfaChallengeFormState();
+}
+
+class _MfaChallengeFormState extends State<_MfaChallengeForm> {
+  final codeCtrl = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = widget.colors;
+    final isRtl = widget.isRtl;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Icon(Icons.shield_outlined, size: 40, color: colors.buy),
+          const SizedBox(height: 16),
+          Text(
+            isRtl ? 'کد شش‌رقمی اپ احرازهویت خود را وارد کنید' : 'Enter the 6-digit code from your authenticator app',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: colors.fg, fontWeight: FontWeight.w600, fontSize: 14),
+          ),
+          const SizedBox(height: 20),
+          AppTextField(
+            placeholder: '••••••',
+            controller: codeCtrl,
+            colors: colors,
+            keyboardType: TextInputType.number,
+            direction: TextDirection.ltr,
+          ),
+          const SizedBox(height: 16),
+          BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              final loading = state is AuthLoading;
+              return GradientActionButton.buy(
+                label: isRtl ? 'تأیید' : 'Verify',
+                loading: loading,
+                onTap: loading
+                    ? null
+                    : () => context
+                        .read<AuthBloc>()
+                        .add(AuthMfaChallengeVerifyRequested(factorId: widget.factorId, code: codeCtrl.text.trim())),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
