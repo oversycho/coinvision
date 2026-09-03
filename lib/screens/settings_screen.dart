@@ -1,3 +1,5 @@
+import 'package:coinvision/screens/about_sheet.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../core/common/widgets/app_bottom_sheet.dart';
@@ -31,8 +33,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final lang = context.lang;
     final isRtl = context.isRtl;
     final authState = context.watch<AuthBloc>().state;
-    final userName = authState is AuthAuthenticated ? (authState.user.fullName ?? authState.user.email ?? '') : '';
-    final userEmail = authState is AuthAuthenticated ? (authState.user.email ?? '') : '';
+    final userName = authState is AuthAuthenticated
+        ? (authState.user.fullName ?? authState.user.email ?? '')
+        : '';
+    final userEmail =
+        authState is AuthAuthenticated ? (authState.user.email ?? '') : '';
     final themeMode = context.watch<ThemeCubit>().state;
 
     return Directionality(
@@ -46,7 +51,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(Tr.t('settings', lang), style: AppFonts.display(color: colors.fg, size: 24, weight: FontWeight.w900)),
+                  child: Text(Tr.t('settings', lang),
+                      style: AppFonts.display(
+                          color: colors.fg, size: 24, weight: FontWeight.w900)),
                 ),
               ),
               Expanded(
@@ -56,7 +63,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     // Account card
                     Container(
                       padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(color: colors.card, borderRadius: BorderRadius.circular(20), border: Border.all(color: colors.border)),
+                      decoration: BoxDecoration(
+                          color: colors.card,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: colors.border)),
                       child: Row(
                         children: [
                           Container(
@@ -64,12 +74,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             height: 52,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              gradient: LinearGradient(colors: [colors.buy, colors.chrome]),
+                              gradient: LinearGradient(
+                                  colors: [colors.buy, colors.chrome]),
                             ),
                             alignment: Alignment.center,
                             child: Text(
-                              userName.isNotEmpty ? userName.characters.first.toUpperCase() : '?',
-                              style: AppFonts.display(color: Colors.white, size: 20, weight: FontWeight.w900),
+                              userName.isNotEmpty
+                                  ? userName.characters.first.toUpperCase()
+                                  : '?',
+                              style: AppFonts.display(
+                                  color: Colors.white,
+                                  size: 20,
+                                  weight: FontWeight.w900),
                             ),
                           ),
                           const SizedBox(width: 14),
@@ -77,10 +93,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(userName.isNotEmpty ? userName : (isRtl ? 'کاربر مهمان' : 'Guest User'),
-                                    style: AppFonts.display(color: colors.fg, size: 15, weight: FontWeight.w700)),
+                                Text(
+                                    userName.isNotEmpty
+                                        ? userName
+                                        : (isRtl
+                                            ? 'کاربر مهمان'
+                                            : 'Guest User'),
+                                    style: AppFonts.display(
+                                        color: colors.fg,
+                                        size: 15,
+                                        weight: FontWeight.w700)),
                                 const SizedBox(height: 2),
-                                Text(userEmail.isNotEmpty ? userEmail : 'guest@coinvision.ir', style: TextStyle(color: colors.mutedFg, fontSize: 12)),
+                                Text(
+                                    userEmail.isNotEmpty
+                                        ? userEmail
+                                        : 'guest@coinvision.ir',
+                                    style: TextStyle(
+                                        color: colors.mutedFg, fontSize: 12)),
                               ],
                             ),
                           ),
@@ -117,7 +146,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           context: context,
                           colors: colors,
                           title: Tr.t('kyc', lang),
-                          child: KycSheet(colors: colors, lang: lang, isRtl: isRtl),
+                          child: KycSheet(
+                              colors: colors, lang: lang, isRtl: isRtl),
                         ),
                       ),
                       _Divider(colors),
@@ -129,7 +159,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           context: context,
                           colors: colors,
                           title: Tr.t('changePassword', lang),
-                          child: ChangePasswordSheet(colors: colors, lang: lang, isRtl: isRtl),
+                          child: ChangePasswordSheet(
+                              colors: colors, lang: lang, isRtl: isRtl),
                         ),
                       ),
                       _Divider(colors),
@@ -141,38 +172,82 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           context: context,
                           colors: colors,
                           title: Tr.t('twoFactor', lang),
-                          child: TwoFactorSheet(colors: colors, lang: lang, isRtl: isRtl),
+                          child: TwoFactorSheet(
+                              colors: colors, lang: lang, isRtl: isRtl),
                         ),
                       ),
                     ]),
                     const SizedBox(height: 20),
                     _SectionLabel(Tr.t('notifications', lang), colors),
                     _SettingsGroup(colors: colors, children: [
-                      _ToggleRow(icon: Icons.swap_horiz, label: Tr.t('notifTrades', lang), value: notifTrades, onChanged: (v) => setState(() => notifTrades = v), colors: colors),
+                      _ToggleRow(
+                          icon: Icons.swap_horiz,
+                          label: Tr.t('notifTrades', lang),
+                          value: notifTrades,
+                          onChanged: (v) => setState(() => notifTrades = v),
+                          colors: colors),
                       _Divider(colors),
-                      _ToggleRow(icon: Icons.show_chart, label: Tr.t('notifPrices', lang), value: notifPrices, onChanged: (v) => setState(() => notifPrices = v), colors: colors),
+                      _ToggleRow(
+                          icon: Icons.show_chart,
+                          label: Tr.t('notifPrices', lang),
+                          value: notifPrices,
+                          onChanged: (v) => setState(() => notifPrices = v),
+                          colors: colors),
                       _Divider(colors),
-                      _ToggleRow(icon: Icons.campaign_outlined, label: Tr.t('notifNews', lang), value: notifNews, onChanged: (v) => setState(() => notifNews = v), colors: colors),
+                      _ToggleRow(
+                          icon: Icons.campaign_outlined,
+                          label: Tr.t('notifNews', lang),
+                          value: notifNews,
+                          onChanged: (v) => setState(() => notifNews = v),
+                          colors: colors),
                     ]),
                     const SizedBox(height: 20),
                     _SectionLabel(Tr.t('support', lang), colors),
                     _SettingsGroup(colors: colors, children: [
-                      _NavRow(icon: Icons.info_outline, label: Tr.t('about', lang), colors: colors, onTap: () {}),
+                      _NavRow(
+                          icon: Icons.info_outline,
+                          label: Tr.t('about', lang),
+                          colors: colors,
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => AboutSheet(
+                                        colors: colors,
+                                        lang: lang,
+                                        isRtl: isRtl)));
+                          }),
                       _Divider(colors),
-                      _NavRow(icon: Icons.help_outline, label: Tr.t('support', lang), colors: colors, onTap: () {}),
+                      _NavRow(
+                          icon: Icons.help_outline,
+                          label: Tr.t('support', lang),
+                          colors: colors,
+                          onTap: () {}),
                     ]),
                     const SizedBox(height: 24),
                     GestureDetector(
-                      onTap: () => context.read<AuthBloc>().add(AuthSignOutRequested()),
+                      onTap: () =>
+                          context.read<AuthBloc>().add(AuthSignOutRequested()),
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        decoration: BoxDecoration(color: colors.loss.withOpacity(0.08), borderRadius: BorderRadius.circular(16), border: Border.all(color: colors.loss.withOpacity(0.2))),
+                        decoration: BoxDecoration(
+                            color: colors.loss.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                                color: colors.loss.withOpacity(0.2))),
                         alignment: Alignment.center,
-                        child: Text(Tr.t('logout', lang), style: AppFonts.display(color: colors.loss, size: 14, weight: FontWeight.w700)),
+                        child: Text(Tr.t('logout', lang),
+                            style: AppFonts.display(
+                                color: colors.loss,
+                                size: 14,
+                                weight: FontWeight.w700)),
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Center(child: Text(Tr.t('version', lang), style: TextStyle(color: colors.mutedFg, fontSize: 11))),
+                    Center(
+                        child: Text(Tr.t('version', lang),
+                            style: TextStyle(
+                                color: colors.mutedFg, fontSize: 11))),
                   ],
                 ),
               ),
@@ -191,7 +266,12 @@ class _SectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(bottom: 8, right: 4, left: 4),
-        child: Text(text.toUpperCase(), style: AppFonts.display(color: colors.mutedFg, size: 11, weight: FontWeight.w700, letterSpacing: 0.15)),
+        child: Text(text.toUpperCase(),
+            style: AppFonts.display(
+                color: colors.mutedFg,
+                size: 11,
+                weight: FontWeight.w700,
+                letterSpacing: 0.15)),
       );
 }
 
@@ -201,7 +281,10 @@ class _SettingsGroup extends StatelessWidget {
   const _SettingsGroup({required this.children, required this.colors});
   @override
   Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(color: colors.card, borderRadius: BorderRadius.circular(18), border: Border.all(color: colors.border)),
+        decoration: BoxDecoration(
+            color: colors.card,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: colors.border)),
         child: Column(children: children),
       );
 }
@@ -210,7 +293,8 @@ class _Divider extends StatelessWidget {
   final dynamic colors;
   const _Divider(this.colors);
   @override
-  Widget build(BuildContext context) => Divider(height: 1, color: colors.border, indent: 50);
+  Widget build(BuildContext context) =>
+      Divider(height: 1, color: colors.border, indent: 50);
 }
 
 class _ToggleRow extends StatelessWidget {
@@ -219,7 +303,12 @@ class _ToggleRow extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
   final dynamic colors;
-  const _ToggleRow({required this.icon, required this.label, required this.value, required this.onChanged, required this.colors});
+  const _ToggleRow(
+      {required this.icon,
+      required this.label,
+      required this.value,
+      required this.onChanged,
+      required this.colors});
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +318,12 @@ class _ToggleRow extends StatelessWidget {
         children: [
           Icon(icon, size: 19, color: colors.chrome),
           const SizedBox(width: 12),
-          Expanded(child: Text(label, style: TextStyle(color: colors.fg, fontSize: 13, fontWeight: FontWeight.w600))),
+          Expanded(
+              child: Text(label,
+                  style: TextStyle(
+                      color: colors.fg,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600))),
           AppToggle(value: value, onChanged: onChanged, colors: colors),
         ],
       ),
@@ -243,7 +337,12 @@ class _NavRow extends StatelessWidget {
   final String? trailingText;
   final VoidCallback onTap;
   final dynamic colors;
-  const _NavRow({required this.icon, required this.label, this.trailingText, required this.onTap, required this.colors});
+  const _NavRow(
+      {required this.icon,
+      required this.label,
+      this.trailingText,
+      required this.onTap,
+      required this.colors});
 
   @override
   Widget build(BuildContext context) {
@@ -255,8 +354,15 @@ class _NavRow extends StatelessWidget {
           children: [
             Icon(icon, size: 19, color: colors.chrome),
             const SizedBox(width: 12),
-            Expanded(child: Text(label, style: TextStyle(color: colors.fg, fontSize: 13, fontWeight: FontWeight.w600))),
-            if (trailingText != null) Text(trailingText!, style: TextStyle(color: colors.mutedFg, fontSize: 12)),
+            Expanded(
+                child: Text(label,
+                    style: TextStyle(
+                        color: colors.fg,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600))),
+            if (trailingText != null)
+              Text(trailingText!,
+                  style: TextStyle(color: colors.mutedFg, fontSize: 12)),
             const SizedBox(width: 4),
             Icon(Icons.chevron_right, size: 18, color: colors.mutedFg),
           ],
