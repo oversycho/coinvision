@@ -12,7 +12,14 @@ class OrdersCubit extends Cubit<List<OrderEntity>> {
   void start(String userId) {
     _userId = userId;
     _sub?.cancel();
-    _sub = repository.watchOrders(userId).listen((orders) => emit(orders));
+    _sub = repository.watchOrders(userId).listen((
+      orders,
+    ) => emit(orders), onError: (e) {
+      // Realtime hiccup (e.g. RealtimeSubscribeException on first connect) --
+      // log and keep the last known state instead of crashing the app.
+      // ignore: avoid_print
+      print('stream error in lib/cubits/orders_cubit.dart: $e');
+    });
   }
 
   Future<void> place({

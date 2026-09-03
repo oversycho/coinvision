@@ -12,7 +12,14 @@ class DepositCubit extends Cubit<List<DepositEntity>> {
   void start(String userId) {
     _userId = userId;
     _sub?.cancel();
-    _sub = repository.watchDeposits(userId).listen((deposits) => emit(deposits));
+    _sub = repository.watchDeposits(userId).listen((
+      deposits,
+    ) => emit(deposits), onError: (e) {
+      // Realtime hiccup (e.g. RealtimeSubscribeException on first connect) --
+      // log and keep the last known state instead of crashing the app.
+      // ignore: avoid_print
+      print('stream error in lib/cubits/deposit_cubit.dart: $e');
+    });
   }
 
   Future<String> getAddress({required String coinSymbol, required String network}) {

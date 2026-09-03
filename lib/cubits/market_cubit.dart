@@ -41,6 +41,12 @@ class MarketCubit extends Cubit<List<Coin>> {
           ..add(match.priceToman);
       }
       emit(List.of(state));
+    }, onError: (e) {
+      // Realtime hiccup (e.g. RealtimeSubscribeException on first connect) --
+      // log and keep the last known state instead of crashing the app.
+      // The underlying supabase client auto-retries the subscription.
+      // ignore: avoid_print
+      print('MarketCubit stream error: $e');
     });
   }
 

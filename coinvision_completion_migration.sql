@@ -192,6 +192,6 @@ $$ language plpgsql security definer;
 -- Snapshot every 15 minutes (coarser than the 30s price sync, to keep the table small).
 select cron.schedule(
   'snapshot-portfolios-job',
-  '15 minutes',
+  '*/15 * * * *',
   $$ select snapshot_portfolios(); $$
 );

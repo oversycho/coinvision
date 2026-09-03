@@ -12,7 +12,14 @@ class WalletCubit extends Cubit<List<WalletEntity>> {
   void start(String userId) {
     _userId = userId;
     _sub?.cancel();
-    _sub = repository.watchWallets(userId).listen((wallets) => emit(wallets));
+    _sub = repository.watchWallets(userId).listen((
+      wallets,
+    ) => emit(wallets), onError: (e) {
+      // Realtime hiccup (e.g. RealtimeSubscribeException on first connect) --
+      // log and keep the last known state instead of crashing the app.
+      // ignore: avoid_print
+      print('stream error in lib/cubits/wallet_cubit.dart: $e');
+    });
   }
 
   /// Real historical portfolio value, from the `portfolio_snapshots` table
