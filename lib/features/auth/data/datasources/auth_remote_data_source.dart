@@ -81,7 +81,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<MfaEnrollResult> enrollMfa() async {
     try {
       final res = await client.auth.mfa.enroll(factorType: FactorType.totp);
-      return MfaEnrollResult(factorId: res.id, qrCodeSvg: res.totp.qrCode, secret: res.totp.secret);
+      final totp = res.totp;
+      if (totp == null) throw ServerException('QR code not returned by Supabase');
+      return MfaEnrollResult(factorId: res.id, qrCodeSvg: totp.qrCode, secret: totp.secret);
     } on AuthException catch (e) {
       throw ServerException(e.message);
     }

@@ -11,7 +11,7 @@ import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/bloc/auth_event.dart';
 import '../features/auth/presentation/bloc/auth_state.dart';
 
-enum _Step { loading, disabled, enrolling, verifying, enabled }
+enum _Step { loading, disabled, verifying, enabled }
 
 class TwoFactorSheet extends StatefulWidget {
   final dynamic colors;

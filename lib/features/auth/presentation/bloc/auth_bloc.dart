@@ -27,8 +27,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return;
       }
       if (await repository.needsMfaChallenge()) {
-        final factors = await repository.listMfaFactors();
-        final verified = factors.fold<String?>(null, (acc, f) => f.status == 'verified' ? f.id : acc);
+        final factorsResult = await repository.listMfaFactors();
+        final verified = factorsResult.fold<String?>(
+          (_) => null,
+          (list) {
+            final v = list.where((f) => f.status == 'verified');
+            return v.isEmpty ? null : v.first.id;
+          },
+        );
         if (verified != null) {
           emit(AuthMfaChallengeRequired(verified));
           return;
@@ -44,8 +50,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         (f) async => emit(AuthError(f.message)),
         (u) async {
           if (await repository.needsMfaChallenge()) {
-            final factors = await repository.listMfaFactors();
-            final verified = factors.fold<String?>(null, (acc, f) => f.status == 'verified' ? f.id : acc);
+            final factorsResult = await repository.listMfaFactors();
+            final verified = factorsResult.fold<String?>(
+              (_) => null,
+              (list) {
+                final v = list.where((f) => f.status == 'verified');
+                return v.isEmpty ? null : v.first.id;
+              },
+            );
             if (verified != null) {
               emit(AuthMfaChallengeRequired(verified));
               return;
