@@ -1,4 +1,5 @@
 import 'package:coinvision/screens/about_sheet.dart';
+import 'package:coinvision/screens/support_sheet.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -222,7 +223,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           icon: Icons.help_outline,
                           label: Tr.t('support', lang),
                           colors: colors,
-                          onTap: () {}),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => SupportSheet(
+                                        colors: colors,
+                                        lang: lang,
+                                        isRtl: isRtl)));
+                          }),
                     ]),
                     const SizedBox(height: 24),
                     GestureDetector(
