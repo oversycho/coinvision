@@ -225,8 +225,8 @@ class _FaqItemState extends State<_FaqItem> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          InkWell(
-            borderRadius: BorderRadius.circular(16),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: () => setState(() => open = !open),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
