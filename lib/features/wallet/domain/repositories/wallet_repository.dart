@@ -22,11 +22,43 @@ class WalletEntity {
 class PortfolioSnapshotEntity {
   final double totalToman;
   final DateTime recordedAt;
-  const PortfolioSnapshotEntity({required this.totalToman, required this.recordedAt});
+  const PortfolioSnapshotEntity(
+      {required this.totalToman, required this.recordedAt});
 
-  factory PortfolioSnapshotEntity.fromMap(Map<String, dynamic> map) => PortfolioSnapshotEntity(
+  factory PortfolioSnapshotEntity.fromMap(Map<String, dynamic> map) =>
+      PortfolioSnapshotEntity(
         totalToman: (map['total_toman'] as num?)?.toDouble() ?? 0,
-        recordedAt: DateTime.tryParse(map['recorded_at'] as String? ?? '') ?? DateTime.now(),
+        recordedAt: DateTime.tryParse(map['recorded_at'] as String? ?? '') ??
+            DateTime.now(),
+      );
+}
+
+class RealizedPnlEntity {
+  final String coinSymbol;
+  final double amount;
+  final double? avgCost;
+  final double sellPrice;
+  final double pnl;
+  final DateTime recordedAt;
+
+  const RealizedPnlEntity({
+    required this.coinSymbol,
+    required this.amount,
+    this.avgCost,
+    required this.sellPrice,
+    required this.pnl,
+    required this.recordedAt,
+  });
+
+  factory RealizedPnlEntity.fromMap(Map<String, dynamic> map) =>
+      RealizedPnlEntity(
+        coinSymbol: map['coin_symbol'] as String,
+        amount: (map['amount'] as num?)?.toDouble() ?? 0,
+        avgCost: (map['avg_cost'] as num?)?.toDouble(),
+        sellPrice: (map['sell_price'] as num?)?.toDouble() ?? 0,
+        pnl: (map['pnl'] as num?)?.toDouble() ?? 0,
+        recordedAt: DateTime.tryParse(map['recorded_at'] as String? ?? '') ??
+            DateTime.now(),
       );
 }
 
@@ -37,5 +69,10 @@ abstract class WalletRepository {
 
   /// Historical total-portfolio-value snapshots (written every 15 min by
   /// the `snapshot_portfolios` cron function) — powers the real performance chart.
-  Future<List<PortfolioSnapshotEntity>> getSnapshots(String userId, {int limitDays = 30});
+  Future<List<PortfolioSnapshotEntity>> getSnapshots(String userId,
+      {int limitDays = 30});
+
+  /// Realtime stream of every realized-P&L row (one per sell fill) —
+  /// written automatically by match_order whenever a sell settles.
+  Stream<List<RealizedPnlEntity>> watchRealizedPnl(String userId);
 }

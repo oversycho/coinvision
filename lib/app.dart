@@ -9,6 +9,7 @@ import 'cubits/locale_cubit.dart';
 import 'cubits/market_cubit.dart';
 import 'cubits/navigation_cubit.dart';
 import 'cubits/orders_cubit.dart';
+import 'cubits/realized_pnl_cubit.dart';
 import 'cubits/theme_cubit.dart';
 import 'cubits/wallet_cubit.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
@@ -36,6 +37,7 @@ class CoinVisionApp extends StatelessWidget {
         BlocProvider(create: (_) => OrdersCubit(sl<OrdersRepository>())),
         BlocProvider(create: (_) => DepositCubit(sl<DepositRepository>())),
         BlocProvider(create: (_) => KycCubit(sl<KycRepository>())),
+        BlocProvider(create: (_) => RealizedPnlCubit(sl<WalletRepository>())),
       ],
       child: BlocBuilder<ThemeCubit, AppThemeMode>(
         builder: (context, themeMode) {
@@ -54,7 +56,9 @@ class CoinVisionApp extends StatelessWidget {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 builder: (context, child) => Directionality(
-                  textDirection: lang == AppLang.fa ? TextDirection.rtl : TextDirection.ltr,
+                  textDirection: lang == AppLang.fa
+                      ? TextDirection.rtl
+                      : TextDirection.ltr,
                   child: child!,
                 ),
                 home: const AppShell(),

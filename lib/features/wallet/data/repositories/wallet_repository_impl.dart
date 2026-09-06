@@ -6,9 +6,15 @@ class WalletRepositoryImpl implements WalletRepository {
   WalletRepositoryImpl(this.remote);
 
   @override
-  Stream<List<WalletEntity>> watchWallets(String userId) => remote.watchWallets(userId);
+  Stream<List<WalletEntity>> watchWallets(String userId) =>
+      remote.watchWallets(userId);
 
   @override
-  Future<List<PortfolioSnapshotEntity>> getSnapshots(String userId, {int limitDays = 30}) =>
+  Future<List<PortfolioSnapshotEntity>> getSnapshots(String userId,
+          {int limitDays = 30}) =>
       remote.getSnapshots(userId, limitDays: limitDays);
+
+  @override
+  Stream<List<RealizedPnlEntity>> watchRealizedPnl(String userId) =>
+      remote.watchRealizedPnl(userId);
 }

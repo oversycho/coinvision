@@ -8,9 +8,11 @@ import '../core/theme/context_ext.dart';
 import '../cubits/locale_cubit.dart';
 import '../cubits/market_cubit.dart';
 import '../cubits/navigation_cubit.dart';
+import '../cubits/realized_pnl_cubit.dart';
 import '../cubits/theme_cubit.dart';
 import '../cubits/wallet_cubit.dart';
 import '../features/wallet/domain/repositories/wallet_repository.dart';
+import 'realized_pnl_history_screen.dart';
 
 class PortfolioScreen extends StatefulWidget {
   const PortfolioScreen({super.key});
@@ -55,6 +57,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
     }
 
     final holdingWallets = wallets.where((w) => w.coinSymbol != 'TOMAN' && (w.balance + w.lockedBalance) > 0).toList();
+    final realizedPnl = context.watch<RealizedPnlCubit>().total;
 
     return Directionality(
       textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
@@ -107,6 +110,35 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                                 ),
                               ],
                             ),
+                            if (realizedPnl != 0) ...[
+                              const SizedBox(height: 8),
+                              GestureDetector(
+                                onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => const RealizedPnlHistoryScreen()),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      isRtl ? 'سود تحقق‌یافته:' : 'Realized P&L:',
+                                      style: TextStyle(color: colors.mutedFg, fontSize: 11),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      showBalances
+                                          ? '${realizedPnl >= 0 ? '+' : ''}${Tr.formatPrice(realizedPnl, lang)} ${Tr.t('toman', lang)}'
+                                          : '••••••',
+                                      style: AppFonts.mono(
+                                        color: realizedPnl >= 0 ? colors.gain : colors.loss,
+                                        size: 12,
+                                        weight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Icon(Icons.chevron_right_rounded, size: 14, color: colors.mutedFg),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ),
@@ -190,6 +222,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                         final value = w.balance * coin.price;
                         final hasCost = w.avgBuyPrice != null && w.avgBuyPrice! > 0;
                         final pnl = hasCost ? (coin.price - w.avgBuyPrice!) / w.avgBuyPrice! * 100 : null;
+                        final pnlAmount = hasCost ? (coin.price - w.avgBuyPrice!) * w.balance : null;
                         return Padding(
                           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                           child: GestureDetector(
@@ -223,6 +256,13 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text(showBalances ? Tr.formatPrice(value, lang) : '••••', style: AppFonts.mono(color: colors.fg, size: 13, weight: FontWeight.w600)),
+                                      if (pnlAmount != null && showBalances) ...[
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          '${pnlAmount >= 0 ? '+' : ''}${Tr.formatPrice(pnlAmount, lang)}',
+                                          style: AppFonts.mono(color: pnlAmount >= 0 ? colors.gain : colors.loss, size: 10),
+                                        ),
+                                      ],
                                       if (pnl != null) ...[
                                         const SizedBox(height: 3),
                                         Container(
@@ -295,4 +335,4 @@ class _PortfolioLinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _PortfolioLinePainter oldDelegate) => oldDelegate.data != data;
-}
+}r
