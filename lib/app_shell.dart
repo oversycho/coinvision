@@ -20,13 +20,7 @@ import 'screens/portfolio_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/splash_screen.dart';
 
-const _tabScreens = {
-  AppScreen.home,
-  AppScreen.portfolio,
-  AppScreen.deposit,
-  AppScreen.orderHistory,
-  AppScreen.settings
-};
+const _tabScreens = {AppScreen.home, AppScreen.portfolio, AppScreen.deposit, AppScreen.orderHistory, AppScreen.settings};
 
 class AppShell extends StatelessWidget {
   const AppShell({super.key});
@@ -47,8 +41,7 @@ class AppShell extends StatelessWidget {
           context.read<DepositCubit>().start(userId);
           context.read<KycCubit>().start(userId);
           context.read<RealizedPnlCubit>().start(userId);
-          if (navCubit.state.screen == AppScreen.splash ||
-              navCubit.state.screen == AppScreen.auth) {
+          if (navCubit.state.screen == AppScreen.splash || navCubit.state.screen == AppScreen.auth) {
             navCubit.navigate(AppScreen.home);
           }
         } else if (authState is AuthUnauthenticated) {
@@ -95,9 +88,7 @@ class AppShell extends StatelessWidget {
               duration: const Duration(milliseconds: 220),
               child: KeyedSubtree(key: ValueKey(nav.screen), child: body),
             ),
-            bottomNavigationBar: showTabBar
-                ? AppTabBar(current: nav.screen, colors: colors, lang: lang)
-                : null,
+            bottomNavigationBar: showTabBar ? AppTabBar(current: nav.screen, colors: colors, lang: lang) : null,
           );
         },
       ),

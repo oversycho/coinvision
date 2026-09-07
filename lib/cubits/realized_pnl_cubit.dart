@@ -10,9 +10,7 @@ class RealizedPnlCubit extends Cubit<List<RealizedPnlEntity>> {
 
   void start(String userId) {
     _sub?.cancel();
-    _sub = repository
-        .watchRealizedPnl(userId)
-        .listen((entries) => emit(entries), onError: (e) {
+    _sub = repository.watchRealizedPnl(userId).listen((entries) => emit(entries), onError: (e) {
       // ignore: avoid_print
       print('RealizedPnlCubit stream error: $e');
     });

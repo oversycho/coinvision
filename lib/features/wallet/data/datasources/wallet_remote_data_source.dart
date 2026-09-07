@@ -3,8 +3,7 @@ import '../../domain/repositories/wallet_repository.dart';
 
 abstract class WalletRemoteDataSource {
   Stream<List<WalletEntity>> watchWallets(String userId);
-  Future<List<PortfolioSnapshotEntity>> getSnapshots(String userId,
-      {int limitDays = 30});
+  Future<List<PortfolioSnapshotEntity>> getSnapshots(String userId, {int limitDays = 30});
   Stream<List<RealizedPnlEntity>> watchRealizedPnl(String userId);
 }
 
@@ -22,20 +21,15 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
   }
 
   @override
-  Future<List<PortfolioSnapshotEntity>> getSnapshots(String userId,
-      {int limitDays = 30}) async {
-    final since =
-        DateTime.now().subtract(Duration(days: limitDays)).toIso8601String();
+  Future<List<PortfolioSnapshotEntity>> getSnapshots(String userId, {int limitDays = 30}) async {
+    final since = DateTime.now().subtract(Duration(days: limitDays)).toIso8601String();
     final rows = await client
         .from('portfolio_snapshots')
         .select()
         .eq('user_id', userId)
         .gte('recorded_at', since)
         .order('recorded_at', ascending: true);
-    return (rows as List)
-        .cast<Map<String, dynamic>>()
-        .map(PortfolioSnapshotEntity.fromMap)
-        .toList();
+    return (rows as List).cast<Map<String, dynamic>>().map(PortfolioSnapshotEntity.fromMap).toList();
   }
 
   @override
@@ -45,7 +39,6 @@ class WalletRemoteDataSourceImpl implements WalletRemoteDataSource {
         .stream(primaryKey: ['id'])
         .eq('user_id', userId)
         .order('recorded_at')
-        .map((rows) =>
-            rows.map(RealizedPnlEntity.fromMap).toList().reversed.toList());
+        .map((rows) => rows.map(RealizedPnlEntity.fromMap).toList().reversed.toList());
   }
 }

@@ -56,9 +56,7 @@ class CoinVisionApp extends StatelessWidget {
                   GlobalCupertinoLocalizations.delegate,
                 ],
                 builder: (context, child) => Directionality(
-                  textDirection: lang == AppLang.fa
-                      ? TextDirection.rtl
-                      : TextDirection.ltr,
+                  textDirection: lang == AppLang.fa ? TextDirection.rtl : TextDirection.ltr,
                   child: child!,
                 ),
                 home: const AppShell(),
